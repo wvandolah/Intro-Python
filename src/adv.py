@@ -56,17 +56,13 @@ earlier adventurers. The only exit is to the south.""",
 """
 
 # Write a class to hold player information, e.g. what room they are in currently
-class Player:
-    def __init__(self, setRoom):
-        self.currentRoom = setRoom
-
 
 #
 # Main
 #
 
 # Make a new player object that is currently in the 'outside' room.
-newPlayer = Player("narrow")
+
 # Write a loop that:
 #
 # * Prints the current room name
@@ -77,6 +73,19 @@ newPlayer = Player("narrow")
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+class Player:
+    def __init__(self, setRoom):
+        self.currentRoom = setRoom
+
+def movingRooms(theD):
+    if theD in rooms[newPlayer.currentRoom]:
+        # print("fuck yes")
+        newPlayer.currentRoom = rooms[newPlayer.currentRoom][theD]
+    else:
+        print("\nYou can't go that way!!!!  Learn to read!!!!!\n")
+
+newPlayer = Player("outside")
 
 playing = True
 
@@ -93,7 +102,8 @@ while playing:
     if userControl == "q":
         playing = False
     elif userControl in ['e','s','n','w']:
-        print('found control')
-        newPlayer.currentRoom = rooms[newPlayer.currentRoom]["{}_to".format(userControl)]
+        # print('found control')
+        movingRooms("{}_to".format(userControl))
+        # newPlayer.currentRoom = rooms[newPlayer.currentRoom]["{}_to".format(userControl)]
     else:
         print("{} is not something this game is able to do. try again".format(userControl))
