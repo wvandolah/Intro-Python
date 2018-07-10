@@ -9,6 +9,7 @@ rooms = {
         "name": "Outside Cave Entrance",
         "description": "North of you, the cave mouth beckons.",
         "n_to": "foyer",
+        "items": ["sword", "ring", "bow"]
     },
 
     "foyer": {
@@ -17,6 +18,7 @@ rooms = {
         "n_to": "overlook",
         "s_to": "outside",
         "e_to": "narrow",
+        "items": ["stick", "shirt", "bow"]
     },
 
     "overlook": {
@@ -40,6 +42,7 @@ the distance, but there is no way across the chasm.""",
 chamber. Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south.""",
         "s_to": "narrow",
+        "items": ["alian head"]
     },
 
 }
@@ -75,8 +78,11 @@ earlier adventurers. The only exit is to the south.""",
 # If the user enters "q", quit the game.
 
 class Player:
-    def __init__(self, setRoom):
+    def __init__(self, setRoom, setItems):
         self.currentRoom = setRoom
+        self.playerItems = setItems
+
+
 
 def movingRooms(theD):
     if theD in rooms[newPlayer.currentRoom]:
@@ -85,19 +91,40 @@ def movingRooms(theD):
     else:
         print("\nYou can't go that way!!!!  Learn to read!!!!!\n")
 
-newPlayer = Player("outside")
+def grabItem(theI):
+    if theI in rooms[newPlayer.currentRoom]['items']:
+        newPlayer.playerItems.append(theI)
+        rooms[newPlayer.currentRoom]['items'].remove(theI)
+        print('found it!', newPlayer.playerItems)
+    elif theI == "n":
+        print("So you're too good for these items? A very bold move!")
+    else:
+        print("that wasn't an item, better luck next time")
+
+
+newPlayer = Player("outside", [])
 
 playing = True
 
 while playing:
-    print("\n{}\n".format(rooms[newPlayer.currentRoom]['name']))
+    print("\n########################\n\n{}\n".format(rooms[newPlayer.currentRoom]['name']))
 
     for l in textwrap.wrap(rooms[newPlayer.currentRoom]['description'],width=50):
         print("{}".format(l))
     
+    
+
+    print("\nItems found in room:")
+    if "items" in rooms[newPlayer.currentRoom]:
+        for index, item in enumerate(rooms[newPlayer.currentRoom]['items'], start=1):
+            print("{}: {}".format(index,item))
+        if not rooms[newPlayer.currentRoom]["items"]:
+            print("none") 
+    else:
+        print("none")
     print("\n")
 
-    userControl = input("what do you want to do? \nn=north, s=south, e=east, w=west, q=quit: ")
+    userControl = input("what do you want to do? \ni=Check inventory, g=grab and item, n=north, s=south, e=east, w=west, q=quit: ")
 
     if userControl == "q":
         playing = False
@@ -105,5 +132,13 @@ while playing:
         # print('found control')
         movingRooms("{}_to".format(userControl))
         # newPlayer.currentRoom = rooms[newPlayer.currentRoom]["{}_to".format(userControl)]
+    elif userControl == "i":
+        print("########## You are holding:")
+        for i in newPlayer.playerItems:
+            print(i)
+        print("##########")
+    elif userControl == "g":
+        itemControl = input("\nType name of item to pick up, or type \"n\": ")
+        grabItem(itemControl)
     else:
-        print("{} is not something this game is able to do. try again".format(userControl))
+        print("########################\n{} is not something this game is able to do. try again".format(userControl))
